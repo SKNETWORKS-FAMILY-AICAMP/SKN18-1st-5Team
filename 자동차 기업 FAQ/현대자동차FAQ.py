@@ -4,6 +4,7 @@ import json
 import re
 import html
 import csv
+import os
 
 def clean_html_text(html_text):
     # HTML entity 디코딩
@@ -71,6 +72,11 @@ def Write_CSV(p_pagenum, p_title, p_content, company="현대자동차"):
     for i, j in zip(p_title, p_content):
         data.append([company , i, j])
 
+    try:
+        os.mkdir("csv_data")
+    except:
+        pass
+    
     with open('./csv_data/{}.csv'.format(company), 'w' if p_pagenum == 1 else 'a', newline='', encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerows(data)
