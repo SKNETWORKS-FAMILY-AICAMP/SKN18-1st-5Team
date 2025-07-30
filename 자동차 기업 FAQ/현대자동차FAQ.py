@@ -66,17 +66,17 @@ def Extract_title_content(p_page):
 
     return title, content
 
-def Write_CSV(p_pagenum, p_title, p_content):
+def Write_CSV(p_pagenum, p_title, p_content, company="현대자동차"):
     data = [["기업명", "제목", "내용"] if p_pagenum == 1 else []]
     for i, j in zip(p_title, p_content):
-        data.append(["현대자동차" , i, j])
+        data.append([company , i, j])
 
-    with open('현대자동차.csv', 'w' if p_pagenum == 1 else 'a', newline='', encoding="utf-8") as f:
+    with open('./csv_data/{}.csv'.format(company), 'w' if p_pagenum == 1 else 'a', newline='', encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerows(data)
 
-def Final_data():
-    df = pd.read_csv("현대자동차.csv")
+def Final_data(company="현대자동차"):
+    df = pd.read_csv("./csv_data/{}.csv".format(company))
     return df
 
 def main():
@@ -93,4 +93,5 @@ def main():
     print(df)
     return df
 
-main()
+if __name__ == "__main__":
+    main()
