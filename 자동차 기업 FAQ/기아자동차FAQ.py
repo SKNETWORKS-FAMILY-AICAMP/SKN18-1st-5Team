@@ -1,9 +1,5 @@
 import requests
-import pandas as pd
 import json
-import re
-import html
-import csv
 import 현대자동차FAQ
 
 def KiaFAQCrawling():
