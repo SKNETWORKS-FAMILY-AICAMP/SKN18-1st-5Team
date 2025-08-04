@@ -1,0 +1,8 @@
+pandas #데이터 분석용
+openpyxl # 데이터 전처리용
+selenium # 크롤링용
+pymysql # mysql driver용
+streamlit # 웹앱서비스용
+SQLAlchemy # streamlit용 ORM 라이브러리
+mysqlclient # streamlit용 mysql driver
+plotly # 차트 시각화용
