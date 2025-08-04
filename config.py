@@ -70,6 +70,10 @@ def create_navigation():
     # 현대 현황 페이지 버튼
     if st.sidebar.button("🏢 현대 현황", use_container_width=True):
         change_page('hyundai')  # 현대 현황 페이지로 이동
+    
+    # 현대 FAQ 페이지 버튼
+    if st.sidebar.button("❓ 현대 FAQ", use_container_width=True):
+        change_page('hyundai_faq')  # 현대 FAQ 페이지로 이동
 
 def change_page(page):
     """

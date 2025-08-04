@@ -5,9 +5,9 @@ import pymysql
 def get_db_connection():
     return pymysql.connect(
         host='localhost',
-        user='Hyundai',
-        password='hyundai',
-        database='hyundai_faq_db',
+        user='root',
+        password='root1234',
+        database='car',
         charset='utf8mb4'
     )
 
