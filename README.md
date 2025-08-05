@@ -51,7 +51,7 @@
 ### Data Processing
 - **Pandas**: 데이터 분석 및 처리
 - **OpenPyXL**: Excel 파일 처리
-- **Selenium**: 웹 크롤링
+- **Requests, Json**: 비동기 방식에서의 웹 크롤링
 
 ### Visualization
 - **Plotly**: 인터랙티브 차트 생성
