@@ -2,7 +2,7 @@ import csv
 import requests
 import json
 import os
-import 현대자동차FAQ_전체
+import 현대자동차FAQ
 
 def KiaFAQCrawling(p_category):
     url = "https://www.kia.com/kr/services/ko/faq.search?searchTag=kwp:kr/faq/{}".format(p_category)
@@ -12,8 +12,8 @@ def KiaFAQCrawling(p_category):
     return page
 
 def Extract_title_content(p_page):
-    title = [현대자동차FAQ_전체.clean_html_text(i["question"]) for i in p_page["data"]["faqList"]["items"]]
-    content = [현대자동차FAQ_전체.clean_html_text(i["answer"]["html"]) for i in p_page["data"]["faqList"]["items"]]
+    title = [현대자동차FAQ.clean_html_text(i["question"]) for i in p_page["data"]["faqList"]["items"]]
+    content = [현대자동차FAQ.clean_html_text(i["answer"]["html"]) for i in p_page["data"]["faqList"]["items"]]
 
     return title, content
 
@@ -39,7 +39,7 @@ def main():
         title, content = Extract_title_content(page)
         Write_CSV(page_num, title, content, "기아자동차", i)
         if page_num == 1: page_num = 2
-    df = 현대자동차FAQ_전체.Final_data("기아자동차(카테고리별)")
+    df = 현대자동차FAQ.Final_data("기아자동차(카테고리별)")
 
     print(df)
     return df
