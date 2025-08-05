@@ -60,7 +60,7 @@ def display_faqs(faqs):
                 st.write(answer)
 
 # 앱 메인
-def main():
+def faq_main():
     st.title("현대자동차 FAQ")
     st.subheader("자주하는 질문을 확인해보세요.")
 
@@ -125,6 +125,3 @@ def main():
                 display_faqs(faqs)
                 with col3:
                     st.markdown(f"**페이지 {current_page} / {total_pages}**")
-
-if __name__ == "__main__":
-    main()

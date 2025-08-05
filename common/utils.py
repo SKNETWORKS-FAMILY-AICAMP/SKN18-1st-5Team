@@ -25,7 +25,7 @@ def Annual_total_load():
     return conn.query(query_total)  
 
 #### 연도 선택 #####
-def selected_year(df_hyundai):
+def select_year(df_hyundai):
     try:
         if 'year' in df_hyundai.columns:
             # year 컬럼을 숫자로 변환 (안전하게)
@@ -39,6 +39,3 @@ def selected_year(df_hyundai):
         st.error(f"❌ 연도 데이터 처리 실패: {str(e)}")
         st.stop()  
     return available_years
-
-##### 증감율 계산 ######
-
