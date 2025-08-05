@@ -2,7 +2,7 @@ import csv
 import requests
 import json
 import os
-import 현대자동차FAQ_전체
+import 현대자동차FAQ
 
 def HyundaiFAQ_Crawling(p_pagenum, p_category):
     url = "https://www.hyundai.com/wsvc/front/biz/frontFaq.faqListArr.do?searchKeyword=&pageNo={}&frontSupiCtgr={}&frontCtgrScd="\
@@ -34,9 +34,9 @@ def main():
         pagenum = 1
         while True:
             page = HyundaiFAQ_Crawling(pagenum, category[i])
-            title, content = 현대자동차FAQ_전체.Extract_title_content(page)
+            title, content = 현대자동차FAQ.Extract_title_content(page)
             if not title:
-                df = 현대자동차FAQ_전체.Final_data("현대자동차(카테고리별)")
+                df = 현대자동차FAQ.Final_data("현대자동차(카테고리별)")
                 categorynum += 1
                 break
             Write_CSV(pagenum, categorynum, title, content, "현대자동차", i)
