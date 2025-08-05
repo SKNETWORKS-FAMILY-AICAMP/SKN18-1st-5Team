@@ -532,12 +532,7 @@ def create_city_detail_map(selected_city, district_data, car_type_district_data,
 
 def initialize_app():
     """애플리케이션 초기 설정"""
-    st.set_page_config(
-        page_title="자동차 등록 현황",
-        page_icon="🚗",
-        layout="wide",
-        initial_sidebar_state="auto"
-    )
+    # st.set_page_config은 메인 앱에서만 호출해야 함
     
     # CSS 스타일링
     st.markdown("""
@@ -567,46 +562,11 @@ def initialize_app():
     if 'current_page' not in st.session_state:
         st.session_state.current_page = 'main'
 
-def create_navigation():
-    """사이드바 네비게이션 생성"""
-    st.sidebar.markdown("### 📋 메뉴")
-    
-    if st.sidebar.button("🏠 메인", use_container_width=True):
-        change_page('main')
-    
-    if st.sidebar.button("📊 전국 현황", use_container_width=True):
-        change_page('national')
-    
-    if st.sidebar.button("🏢 현대 현황", use_container_width=True):
-        change_page('hyundai')
 
-def change_page(page):
-    """페이지 변경 함수"""
-    st.session_state.current_page = page
 
 # ============================================================================
 # 페이지 렌더링 함수들
 # ============================================================================
-
-def render_main_page():
-    """메인 페이지 렌더링"""
-    st.title("🚗 자동차 등록 현황 대시보드")
-    
-    st.markdown("### 📋 메인 메뉴")
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("#### 📈 전국 자동차 등록 현황")
-        st.markdown("전국의 자동차 등록 현황을 확인할 수 있습니다.")
-        if st.button("전국 현황 보기", key="btn_national", use_container_width=True):
-            change_page('national')
-    
-    with col2:
-        st.markdown("#### 🏢 현대 자동차 등록 현황")
-        st.markdown("현대 자동차의 등록 현황을 확인할 수 있습니다.")
-        if st.button("현대 현황 보기", key="btn_hyundai", use_container_width=True):
-            change_page('hyundai')
 
 def render_national_page():
     """전국 현황 페이지 렌더링"""
@@ -694,9 +654,10 @@ def render_national_page():
         city_total_data = get_city_total_data(conn, selected_year)
         city_total_dict = dict(zip(city_total_data['city_name'], city_total_data['total_count']))
         
-        # 세션 상태로 선택된 시 관리
-        if 'selected_city_for_map' not in st.session_state:
-            st.session_state.selected_city_for_map = None
+        # 세션 상태로 선택된 시 관리 - 키를 더 구체적으로 설정
+        session_key = f'selected_city_for_map_{selected_year}'
+        if session_key not in st.session_state:
+            st.session_state[session_key] = None
         
         # 지도 2열 레이아웃
         col1, col2 = st.columns([1, 1])
@@ -714,15 +675,16 @@ def render_national_page():
             selected_city_dropdown = st.selectbox(
                 "광역자치단체 선택",
                 options=["광역자치단체를 선택하세요"] + available_cities,
-                index=0
+                index=0,
+                key=f"city_dropdown_{selected_year}"
             )
             
             if selected_city_dropdown != "광역자치단체를 선택하세요":
-                st.session_state.selected_city_for_map = selected_city_dropdown
+                st.session_state[session_key] = selected_city_dropdown
                 st.success(f"✅ {selected_city_dropdown} 선택됨")
             
-            if st.session_state.selected_city_for_map:
-                selected_city = st.session_state.selected_city_for_map
+            if st.session_state[session_key]:
+                selected_city = st.session_state[session_key]
                 st.markdown(f"**🗺️ {selected_city} 광역자치단체의 기초자치단체 지도**")
                 
                 district_data = get_district_data(conn, selected_city, selected_year)
@@ -739,31 +701,4 @@ def render_national_page():
         
     except Exception as e:
         st.error(f"❌ 데이터 조회 실패: {str(e)}")
-
-def render_hyundai_page():
-    """현대 현황 페이지 렌더링"""
-    st.markdown("### 🏢 현대 자동차 등록 현황")
-    st.info("현대 자동차 등록 현황 페이지는 현재 개발 중입니다.")
-
-# ============================================================================
-# 메인 애플리케이션
-# ============================================================================
-
-def main():
-    """메인 애플리케이션"""
-    # 초기화
-    initialize_app()
-    
-    # 사이드 바 네비게이션
-    create_navigation()
-    
-    # 페이지별 내용 표시
-    if st.session_state.current_page == 'main':
-        render_main_page()
-    elif st.session_state.current_page == 'national':
-        render_national_page()
-    elif st.session_state.current_page == 'hyundai':
-        render_hyundai_page()
-
-if __name__ == "__main__":
-    main() 
+        st.error("데이터베이스 연결을 확인해주세요.")
