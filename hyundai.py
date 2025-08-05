@@ -64,6 +64,27 @@ st.markdown( # 화면 비율 설정
     [data-testid="metric-container"] .metric-container .metric-label {
         text-align: left !important;
     }
+    
+    /* delta 표시 강화 */
+    [data-testid="metric-container"] .metric-container .metric-delta {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* delta 값 스타일링 */
+    [data-testid="metric-container"] .metric-container .metric-delta svg {
+        display: inline-block !important;
+    }
+    
+    /* 메트릭 카드 전체 스타일 개선 */
+    [data-testid="metric-container"] {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 16px;
+        background-color: #fafafa;
+        margin-bottom: 16px;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -714,7 +735,10 @@ if not df_hyundai.empty and not df_total.empty:
             market_share = selected_data['market_share']
             other_share = 100 - market_share
             
-            # 메트릭 카드
+            # 전년도 데이터 가져오기
+            prev_year_data = market_share_df[market_share_df['year'] == selected_year - 1]
+            
+            # 메트릭 카드 (기본 정보)
             col1, col2, col3, col4 = st.columns(4)
             
             with col1:
@@ -726,27 +750,4 @@ if not df_hyundai.empty and not df_total.empty:
             with col4:
                 st.metric("기타 제조사", f"{other_share:.1f}%")
             
-            fig_stack = go.Figure()
-            
-            # 현대차 점유율
-            fig_stack.add_trace(go.Bar(
-                name='현대자동차',
-                x=['점유율'],
-                y=[market_share],
-                marker_color='#1f77b4',
-                text=f"{market_share:.1f}%",
-                textposition='inside',
-                textfont=dict(color='white', size=16)
-            ))
-            
-            # 기타 제조사 점유율
-            fig_stack.add_trace(go.Bar(
-                name='기타 제조사',
-                x=['점유율'],
-                y=[other_share],
-                marker_color='#f0f0f0',
-                text=f"{other_share:.1f}%",
-                textposition='inside',
-                textfont=dict(color='black', size=16)
-            ))
-
+          

@@ -390,7 +390,6 @@ def render_hyundai_page():
         st.stop()
     
     # 국내판매 vs 해외판매 분석
-    st.markdown("---")
     st.header(f"🔵 {selected_year}년 상세분석")
     
     # 국내판매와 해외판매 데이터 확인 및 분석
@@ -823,7 +822,7 @@ def render_hyundai_page():
             st.plotly_chart(fig_market_share, use_container_width=True)
             
             # 선택된 연도의 상세 분석
-            st.subheader(f"🔵 {selected_year}년 현대자동차 점유율 상세 분석")
+            st.subheader(f" ✅ {selected_year}년 현대자동차 점유율 상세 분석")
             
             if not selected_year_data.empty:
                 selected_data = selected_year_data.iloc[0]
@@ -832,6 +831,9 @@ def render_hyundai_page():
                 market_share = selected_data['market_share']
                 other_share = 100 - market_share
                 
+                 # 전년도 데이터 가져오기
+                prev_year_data = market_share_df[market_share_df['year'] == selected_year - 1]
+            
                 # 메트릭 카드
                 col1, col2, col3, col4 = st.columns(4)
                 
@@ -845,4 +847,100 @@ def render_hyundai_page():
                     st.metric("기타 제조사", f"{other_share:.1f}%")
                 
                 fig_stack = go.Figure()
+                # 전년도 대비 증감율 분석
+                if not prev_year_data.empty:
+                    prev_data = prev_year_data.iloc[0]
+                    prev_hyundai_sales = prev_data['hyundai_sales']
+                    prev_total_new_count = prev_data['total_new_count']
+                    prev_market_share = prev_data['market_share']
+                
+                # 증감율 계산
+                hyundai_growth_rate = ((hyundai_sales - prev_hyundai_sales) / prev_hyundai_sales * 100) if prev_hyundai_sales > 0 else 0
+                total_growth_rate = ((total_new_count - prev_total_new_count) / prev_total_new_count * 100) if prev_total_new_count > 0 else 0
+                market_share_growth_rate = market_share - prev_market_share
+                
+                st.markdown("---")
+                st.subheader("📋 상세 정보")
+                delta_col1, delta_col2, delta_col3 = st.columns(3)
+                
+                with delta_col1:
+                    delta_value1 = hyundai_sales - prev_hyundai_sales
+                    st.info(f"""
+                    **현대차 판매실적 변화**
+                    - 전년도: {prev_hyundai_sales:,}대
+                    - 현재: {hyundai_sales:,}대
+                    - 변화: {delta_value1:+,}대 ({hyundai_growth_rate:+.1f}%)
+                    """)
+                
+                with delta_col2:
+                    delta_value2 = total_new_count - prev_total_new_count
+                    st.info(f"""
+                    **전체 신차등록현황 변화**
+                    - 전년도: {prev_total_new_count:,}대
+                    - 현재: {total_new_count:,}대
+                    - 변화: {delta_value2:+,}대 ({total_growth_rate:+.1f}%)
+                    """)
+                
+                with delta_col3:
+                    delta_value3 = market_share_growth_rate
+                    st.info(f"""
+                    **현대차 점유율 변화**
+                    - 전년도: {prev_market_share:.1f}%
+                    - 현재: {market_share:.1f}%
+                    - 변화: {delta_value3:+.1f}%p
+                    """)
+                
+                # 상세 분석 설명
+                
+                st.subheader("📋 증감율 분석 해석")
+                
+                analysis_text = f"""
+                **{selected_year}년 vs {selected_year-1}년 비교 분석:**
+                
+                - **현대차 판매실적**: {prev_hyundai_sales:,}대 → {hyundai_sales:,}대 ({hyundai_growth_rate:+.1f}%)
+                - **전체 신차등록현황**: {prev_total_new_count:,}대 → {total_new_count:,}대 ({total_growth_rate:+.1f}%)
+                - **현대차 점유율**: {prev_market_share:.1f}% → {market_share:.1f}% ({market_share_growth_rate:+.1f}%p)
+                
+                **시장 상황 분석:**
+                """
+                
+                if market_share_growth_rate > 0:
+                    if hyundai_growth_rate > total_growth_rate:
+                        analysis_text += f"- 현대차가 시장 평균({total_growth_rate:+.1f}%)보다 높은 성장률({hyundai_growth_rate:+.1f}%)을 보여 점유율이 증가"
+                    else:
+                        analysis_text += f"- 시장 전체 성장률({total_growth_rate:+.1f}%)에 비해 현대차 성장률({hyundai_growth_rate:+.1f}%)이 낮지만, 절대적 성장으로 점유율 증가"
+                elif market_share_growth_rate < 0:
+                    if hyundai_growth_rate < total_growth_rate:
+                        analysis_text += f"- 현대차가 시장 평균({total_growth_rate:+.1f}%)보다 낮은 성장률({hyundai_growth_rate:+.1f}%)을 보여 점유율이 감소"
+                    else:
+                        analysis_text += f"- 시장 전체 성장률({total_growth_rate:+.1f}%)에 비해 현대차 성장률({hyundai_growth_rate:+.1f}%)이 높지만, 상대적 성장 부족으로 점유율 감소"
+                else:
+                    analysis_text += f"- 현대차와 시장 전체가 비슷한 성장률을 보여 점유율이 유지"
+                
+                st.markdown(analysis_text)
+            else:
+                st.info(f"📊 **전년도 대비 증감율 분석**: {selected_year-1}년 데이터가 없어 비교 분석을 할 수 없습니다.")
             
+            fig_stack = go.Figure()
+            
+            # 현대차 점유율
+            fig_stack.add_trace(go.Bar(
+                name='현대자동차',
+                x=['점유율'],
+                y=[market_share],
+                marker_color='#1f77b4',
+                text=f"{market_share:.1f}%",
+                textposition='inside',
+                textfont=dict(color='white', size=16)
+            ))
+            
+            # 기타 제조사 점유율
+            fig_stack.add_trace(go.Bar(
+                name='기타 제조사',
+                x=['점유율'],
+                y=[other_share],
+                marker_color='#f0f0f0',
+                text=f"{other_share:.1f}%",
+                textposition='inside',
+                textfont=dict(color='black', size=16)
+            ))
