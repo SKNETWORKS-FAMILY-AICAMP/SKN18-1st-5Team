@@ -67,7 +67,7 @@
 ---
 
 ## 📊 데이터베이스 스키마 (ERD 요약)
-
+![image](이미지/ERD.png)
 ### 1. `integrated_statistics` (전국 자동차 등록 종합 통계)
 - 성별(gender), 광역자치단체(city), 기초자치단체(district), 연도(year), 차종별 판매량(car_type), 신차등록(new_car), 차량 등록 대수(count)
 - 각 테이블마다 정규화된 형태로 구성
